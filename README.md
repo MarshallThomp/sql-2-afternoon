@@ -47,6 +47,11 @@ SELECT a.name, b.name FROM some_table a JOIN another_table b ON a.some_id = b.so
 
 <summary> <code> #1 </code> </summary>
 
+SELECT * FROM invoice i
+JOIN invoice_line il 
+ON il.invoice_id = i.invoice_id
+WHERE il.unit_price > 0.99;
+
 ```sql
 SELECT *
 FROM invoice i
@@ -60,6 +65,11 @@ WHERE il.unit_price > 0.99;
 
 <summary> <code> #2 </code> </summary>
 
+SELECT i.invoice_date, c.first_name, c.last_name, i.total
+FROM invoice i
+JOIN customer c
+ON c.customer_id = i.customer_id;
+
 ```sql
 SELECT i.invoice_date, c.first_name, c.last_name, i.total
 FROM invoice i
@@ -71,6 +81,11 @@ JOIN customer c ON i.customer_id = c.customer_id;
 <details>
 
 <summary> <code> #3 </code> </summary>
+
+SELECT c.first_name, c.last_name, e.first_name, e.last_name
+FROM customer c
+JOIN employee e
+ON c.support_rep_id = e.employee_id;
 
 ```sql
 SELECT c.first_name, c.last_name, e.first_name, e.last_name
@@ -84,6 +99,10 @@ JOIN employee e ON c.support_rep_id = e.employee_id;
 
 <summary> <code> #4 </code> </summary>
 
+SELECT a.title, ar.name FROM album a
+JOIN artist ar
+ON a.artist_id = ar.artist_id;
+
 ```sql
 SELECT al.title, ar.name
 FROM album al
@@ -95,6 +114,12 @@ JOIN artist ar ON al.artist_id = ar.artist_id;
 <details>
 
 <summary> <code> #5 </code> </summary>
+
+SELECT p.playlist_id, pt.playlist_id
+FROM playlist p
+JOIN playlist_track pt
+ON p.playlist_id = pt.playlist_id
+WHERE p.name = 'Music';
 
 ```sql
 SELECT pt.track_id
@@ -109,6 +134,11 @@ WHERE p.name = 'Music';
 
 <summary> <code> #6 </code> </summary>
 
+SELECT t.name FROM track t
+JOIN playlist_track pt 
+ON pt.playlist_id = t.track_id
+WHERE pt.playlist_id = 5;
+
 ```sql
 SELECT t.name
 FROM track t
@@ -122,6 +152,13 @@ WHERE pt.playlist_id = 5;
 
 <summary> <code> #7 </code> </summary>
 
+SELECT t.name, p.name 
+FROM track t
+JOIN playlist_track pt 
+	ON t.track_id = pt.track_id
+JOIN playlist p
+	ON pt.playlist_id = p.playlist_id;
+
 ```sql
 SELECT t.name, p.name
 FROM track t
@@ -134,6 +171,14 @@ JOIN playlist p ON pt.playlist_id = p.playlist_id;
 <details>
 
 <summary> <code> #8 </code> </summary>
+
+SELECT t.name, a.title
+FROM track t
+JOIN album a
+	ON t.album_id = a.album_id
+JOIN genre g
+	ON t.genre_id = g.genre_id
+WHERE g.name = 'Alternative & Punk';
 
 ```sql
 SELECT t.name, a.title
@@ -194,6 +239,12 @@ SELECT name, Email FROM Athlete WHERE AthleteId IN ( SELECT PersonId FROM PieEat
 
 <summary> <code> #1 </code> </summary>
 
+SELECT * FROM invoice
+WHERE invoice_id IN (
+  SELECT invoice_id FROM invoice_line
+  WHERE unit_price > 0.99
+  );
+
 ```sql
 SELECT *
 FROM invoice
@@ -205,6 +256,12 @@ WHERE invoice_id IN ( SELECT invoice_id FROM invoice_line WHERE unit_price > 0.9
 <details>
 
 <summary> <code> #2 </code> </summary>
+
+SELECT * FROM playlist_track
+WHERE playlist_id IN (
+  SELECT playlist_id FROM playlist
+  WHERE name = 'MUSIC'
+  );
 
 ```sql
 SELECT *
@@ -218,6 +275,12 @@ WHERE playlist_id IN ( SELECT playlist_id FROM playlist WHERE name = 'Music' );
 
 <summary> <code> #3 </code> </summary>
 
+SELECT name FROM track
+WHERE track_id IN (
+  SELECT track_id FROM playlist_track
+  WHERE playlist_id = 5
+  );
+
 ```sql
 SELECT name
 FROM track
@@ -229,6 +292,12 @@ WHERE track_id IN ( SELECT track_id FROM playlist_track WHERE playlist_id = 5 );
 <details>
 
 <summary> <code> #4 </code> </summary>
+
+SELECT * FROM track
+WHERE genre_id IN (
+  SELECT genre_id FROM genre
+  WHERE name = 'Comedy'
+  );
 
 ```sql
 SELECT *
@@ -242,6 +311,12 @@ WHERE genre_id IN ( SELECT genre_id FROM genre WHERE name = 'Comedy' );
 
 <summary> <code> #5 </code> </summary>
 
+SELECT * FROM track
+WHERE album_id IN (
+  SELECT album_id FROM album
+  WHERE name = 'Fireball'
+  );
+
 ```sql
 SELECT *
 FROM track
@@ -253,6 +328,15 @@ WHERE album_id IN ( SELECT album_id FROM album WHERE title = 'Fireball' );
 <details>
 
 <summary> <code> #6 </code> </summary>
+
+SELECT * FROM track
+WHERE album_id IN (
+  SELECT album_id FROM album
+  WHERE artist_id IN (
+    SELECT artist_id FROM artist
+    WHERE name = 'Queen'
+    )
+  )
 
 ```sql
 SELECT *
@@ -305,6 +389,10 @@ UPDATE athletes SET sport = 'Picklball' WHERE sport = 'pockleball';
 
 <summary> <code> #1 </code> </summary>
 
+UPDATE customer
+SET fax = NULL
+WHERE fax IS NOT NULL;
+
 ```sql
 UPDATE customer
 SET fax = null
@@ -316,6 +404,10 @@ WHERE fax IS NOT null;
 <details>
 
 <summary> <code> #2 </code> </summary>
+
+UPDATE customer
+SET company = 'Self'
+WHERE company = null;
 
 ```sql
 UPDATE customer
@@ -329,6 +421,10 @@ WHERE company IS null;
 
 <summary> <code> #3 </code> </summary>
 
+UPDATE customer
+SET last_name = 'Thompson'
+WHERE first_name = 'Julia' AND last_name = 'Barnett';
+
 ```sql
 UPDATE customer 
 SET last_name = 'Thompson' 
@@ -341,6 +437,10 @@ WHERE first_name = 'Julia' AND last_name = 'Barnett';
 
 <summary> <code> #4 </code> </summary>
 
+UPDATE customer
+SET support_rep_id = 4
+WHERE email = 'luisrojas@yahoo.cl';
+
 ```sql
 UPDATE customer
 SET support_rep_id = 4
@@ -352,6 +452,14 @@ WHERE email = 'luisrojas@yahoo.cl';
 <details>
 
 <summary> <code> #5 </code> </summary>
+
+UPDATE track
+SET composer = 'The darkness around us'
+WHERE genre_id IN (
+  SELECT genre_id FROM genre
+  WHERE name = 'Metal'
+  )
+  AND composer IS null;
 
 ```sql
 UPDATE track
@@ -396,6 +504,12 @@ GROUP BY [column];
 
 <summary> <code> #1 </code> </summary>
 
+SELECT COUNT(*), g.name
+FROM track t
+JOIN genre g
+ON t.genre_id = g.genre_id
+GROUP BY g.name;
+
 ```sql
 SELECT COUNT(*), g.name
 FROM track t
@@ -408,6 +522,13 @@ GROUP BY g.name;
 <details>
 
 <summary> <code> #2 </code> </summary>
+
+SELECT COUNT(*), g.name
+FROM track t
+JOIN genre g 
+ON g.genre_id = t.genre_id
+WHERE g.name = 'Pop' OR g.name = 'Rock'
+GROUP BY g.name;
 
 ```sql
 SELECT COUNT(*), g.name
@@ -422,6 +543,12 @@ GROUP BY g.name;
 <details>
 
 <summary> <code> #3 </code> </summary>
+
+SELECT COUNT(*), ar.name
+FROM album a
+JOIN artist ar 
+ON ar.artist_id = a.artist_id
+GROUP BY ar.name;
 
 ```sql
 SELECT ar.name, COUNT(*)
@@ -461,6 +588,9 @@ FROM [table];
 
 <summary> <code> #1 </code> </summary>
 
+SELECT DISTINCT composer
+FROM track;
+
 ```sql
 SELECT DISTINCT composer
 FROM track;
@@ -472,6 +602,9 @@ FROM track;
 
 <summary> <code> #2 </code> </summary>
 
+SELECT DISTINCT billing_postal_code
+FROM invoice;
+
 ```sql
 SELECT DISTINCT billing_postal_code
 FROM invoice;
@@ -482,6 +615,9 @@ FROM invoice;
 <details>
 
 <summary> <code> #3 </code> </summary>
+
+SELECT DISTINCT company
+FROM customer;
 
 ```sql
 SELECT DISTINCT company
@@ -548,6 +684,9 @@ DELETE FROM [table] WHERE [condition]
 
 <summary> <code> #1 </code> </summary>
 
+DELETE FROM practice_delete 
+WHERE type = 'bronze';
+
 ```sql
 DELETE 
 FROM practice_delete 
@@ -560,6 +699,9 @@ WHERE type = 'bronze';
 
 <summary> <code> #2 </code> </summary>
 
+DELETE FROM practice_delete
+WHERE type = 'silver';
+
 ```sql
 DELETE 
 FROM practice_delete 
@@ -571,6 +713,9 @@ WHERE type = 'silver';
 <details>
 
 <summary> <code> #3 </code> </summary>
+
+DELETE FROM practice_delete
+WHERE value = 150;
 
 ```sql
 DELETE 
@@ -608,6 +753,54 @@ Let's simulate an e-commerce site. We're going to need users, products, and orde
 * Run queries against your data.
   * Get all orders for a user.
   * Get how many orders each user has.
+
+  CREATE TABLE users (
+  users_id SERIAL PRIMARY KEY,
+  name VARCHAR,
+  email VARCHAR
+  );
+  
+CREATE TABLE products (
+  product_id SERIAL PRIMARY KEY,
+  name VARCHAR,
+  price INTEGER
+  );
+  
+CREATE TABLE orders (
+  order_id SERIAL PRIMARY KEY,
+  product_id INTEGER
+  );
+
+INSERT INTO users (name, email) VALUES ('Marshall Thompson', 'marshall@email.com');
+INSERT INTO users (name, email) VALUES ('Josh Jenga', 'josh@email.com');
+INSERT INTO users (name, email) VALUES ('Hunter Lurker', 'hunter@email.com');
+INSERT INTO products (name, price) VALUES ('toothbrush', 5.99);
+INSERT INTO products (name, price) VALUES ('comb', 3);
+INSERT INTO products (name, price) VALUES ('soap', 25.99);
+INSERT INTO orders (product_id) VALUES (1);
+INSERT INTO orders (product_id) VALUES (2);
+INSERT INTO orders (product_id) VALUES (3);
+
+SELECT p.name, o.product_id
+FROM products p
+JOIN orders o 
+ON p.products_id = o.product_id
+WHERE o.product_id = 1;
+
+SELECT * FROM orders;
+
+SELECT SUM(o.product_id)
+FROM orders o 
+JOIN products p
+ON o.product_id = p.product_id
+GROUP BY p.price;
+
+ALTER TABLE orders 
+ADD users_id INTEGER;
+
+SELECT * FROM users u
+JOIN orders o
+ON o.users_id = u.users_id
 
 ### Black Diamond
 
